@@ -1,3 +1,5 @@
+// Time Complexity O(n^2)
+// Space Complexity O(n^2)
 class Solution {
     public int countSubstrings(String str) {
         int n = str.length();   // get length of input string 
