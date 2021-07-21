@@ -18,40 +18,70 @@ Time Complexity O(nLogn)
 Space Complexity O(n)
 */
 class Solution {
-    public int minMeetingRooms(Interval[] intervals) {
-        
+    public int minMeetingRooms1(int[][] intervals) {
         // Check for the base case. If there are no intervals, return 0
         if (intervals.length == 0) {
             return 0;
         }
-        
+
+        // sort by start time
+        Comparator<int[]> c = (int[] a, int[] b) -> (a[0] - b[0]);
+        Arrays.sort(intervals, c);
+
+        // create minHeap to store end times
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+
+        pq.add(intervals[0][1]); // add first element
+
+        // if start time >= top meeting finish time, then remove top
+        // add the endTime to priorityqueue
+        for(int i=1; i<intervals.length; i++) {
+            if(pq.peek() <= intervals[i][0]) {
+                // No collision. Remove the min end time
+                pq.poll();
+            }
+            pq.add(intervals[i][1]);
+        }
+
+        return pq.size();
+    }
+
+
+    
+    public int minMeetingRooms(Interval[] intervals) {
+
+        // Check for the base case. If there are no intervals, return 0
+        if (intervals.length == 0) {
+            return 0;
+        }
+
         //Min Heap
-        PriorityQueue<Integer> allocator = 
+        PriorityQueue<Integer> allocator =
             new PriorityQueue<Integer>(
             intervals.length,
             new Comparator<Integer>(){
                 public int compare(Integer a, Integer b){
                     return a - b;}
             });
-        
+
         // Sort the intervals by start time
         Arrays.sort(intervals, new Comparator<Interval>(){
             public int compare(Interval a, Interval b) {
                 return a.start - b.start;
             }
         });
-        
+
         // Add the first meeting
         allocator.add(intervals[0].end);
-        
+
         for(int i=1; i< intervals.length; i++){
             if(intervals[i].start >= allocator.peek()){
                 // No collision. Remove the min end time
-                allocator.poll(); 
-            }            
+                allocator.poll();
+            }
             allocator.add(intervals[i].end);
         }
         return allocator.size();
-        
+
     }
 }
