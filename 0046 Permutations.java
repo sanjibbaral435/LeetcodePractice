@@ -1,35 +1,34 @@
 // Time Complexity O(N!)
 class Solution {
     public List<List<Integer>> permute(int[] nums) {
+        List<Integer> numsList = new ArrayList();
+        for (int num : nums)
+            numsList.add(num);
+
         List<List<Integer>> res = new ArrayList<>();
-        permuteHelper(nums, 0, nums.length, res);
+        int first = 0;
+        permuteUtil(nums.length, numsList, res, first);
+
         return res;
     }
-    
-    public void permuteHelper(int[] nums, int start, int end, List<List<Integer>> res){
-       if(start == end){
-            List<Integer> curr = new ArrayList<Integer>();
-            for(int i = 0; i< nums.length; i++){
-                curr.add(nums[i]);
-            }
-            res.add(curr);
-        } else {
-            for(int i = start; i<end; i++){
-                //choose
-                swap(nums, start, i);
 
-                //explore
-                permuteHelper(nums, start+1, nums.length, res);
-
-                //unchoose
-                swap(nums, start, i);
-            }
+    public void permuteUtil(int n, List<Integer> nums, List<List<Integer>> res, int first) {
+        if(first == n) {
+            // reached an end of permutation
+            res.add(new ArrayList<Integer>(nums));
+            return;
         }
-    } 
-    
-    public void swap(int[] nums, int i, int j){
-        int temp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = temp;
+
+        for(int i=first; i<n; i++) {
+            //swap first and i
+            Collections.swap(nums, first, i);
+
+            //permute by fixing the current element
+            permuteUtil(n, nums, res, first+1);
+
+            //backtrack
+            Collections.swap(nums, first, i);
+        }
     }
+
 }
